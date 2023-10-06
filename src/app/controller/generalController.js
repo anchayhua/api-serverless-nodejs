@@ -1,4 +1,3 @@
-const AWS = require('aws-sdk')
 const uuid = require('node-uuid')
 
 const { GENERAL_TABLE } = process.env

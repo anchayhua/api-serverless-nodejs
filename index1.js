@@ -2,7 +2,11 @@ const serverless = require('serverless-http')
 const bodyParser = require('body-parser')
 const express = require('express')
 const app = express()
-const AWS = require('aws-sdk')
+const {
+    DynamoDBDocument } = require("@aws-sdk/lib-dynamodb"),
+    {
+        DynamoDB
+    } = require("@aws-sdk/client-dynamodb");
 const uuid = require('node-uuid')
 const axios = require('axios');
 
@@ -10,11 +14,11 @@ const { TODOS_TABLE, IS_OFFLINE } = process.env
 
 const dynamoDb =
     IS_OFFLINE === 'true'
-        ? new AWS.DynamoDB.DocumentClient({
+        ? DynamoDBDocument.from(new DynamoDB({
             region: 'localhost',
             endpoint: 'http://localhost:8000',
-        })
-        : new AWS.DynamoDB.DocumentClient()
+        }))
+        : DynamoDBDocument.from(new DynamoDB())
 
 app.use(bodyParser.json({ strict: false }))
 
@@ -141,4 +145,11 @@ app.get('/starwars', async (req, res) => {
     }
 })
 
-module.exports.handler = serverless(app)
+if (!process.env.IS_OFFLINE && !process.env.JEST_WORKER_ID) {
+    const server = app.listen(3000, () => {
+        console.log('Servidor Express escuchando en el puerto 3000');
+    });
+}
+
+// module.exports.handler = serverless(app)
+module.exports = app;

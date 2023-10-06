@@ -1,13 +1,17 @@
-const AWS = require('aws-sdk')
+const {
+    DynamoDBDocument } = require("@aws-sdk/lib-dynamodb"),
+    {
+        DynamoDB
+    } = require("@aws-sdk/client-dynamodb");
 
 const { IS_OFFLINE } = process.env
 
 const dynamoDb =
     IS_OFFLINE === 'true'
-        ? new AWS.DynamoDB.DocumentClient({
+        ? DynamoDBDocument.from(new DynamoDB({
             region: 'localhost',
             endpoint: 'http://localhost:8000',
-        })
-        : new AWS.DynamoDB.DocumentClient()
+        }))
+        : DynamoDBDocument.from(new DynamoDB())
 
 module.exports = dynamoDb;
