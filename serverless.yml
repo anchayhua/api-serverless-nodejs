@@ -1,4 +1,4 @@
-service: lambda-rest-api
+service: lambda-api-serverless-nodejs
 
 frameworkVersion: "3"
 

@@ -12,6 +12,9 @@ sls offline start --migrate
     sls dynamodb install
 sls deploy
 
+serverless invoke local --function general-app
+    serverless invoke --function general-app
+
 curl -H "Content-Type: application/json" -X POST http://localhost:3000/general -d '{"title": "Data de prueba"}'
 curl -H "Content-Type: application/json" -X POST https://b35uuai4il.execute-api.us-east-1.amazonaws.com/dev/general -d '{"title": "Data de prueba"}'
 curl -H "Content-Type: application/json" -X PUT http://localhost:3000/general -d '{"generalId": "d70e8e75-d815-4d10-85b6-8ff2339eee47", "title": "Data de prueba 2", "done": true}'
