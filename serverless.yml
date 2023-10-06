@@ -1,0 +1,54 @@
+service: lambda-rest-api
+
+frameworkVersion: "3"
+
+plugins:
+  - serverless-dynamodb-local
+  - serverless-offline
+
+custom:
+  tableName: "generaldb-${self:provider.stage}"
+  serverless-offline:
+    noPrependStageInUrl: true
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  stage: dev
+  region: us-east-1
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - { "Fn::GetAtt": ["GeneralDynamoDBTable", "Arn"] }
+  environment:
+    GENERAL_TABLE: ${self:custom.tableName}
+
+functions:
+  general-app:
+    handler: index.handler
+    events:
+      - http: ANY /
+      - http: "ANY /{proxy+}"
+
+resources:
+  Resources:
+    GeneralDynamoDBTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: generalId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: generalId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:custom.tableName}
