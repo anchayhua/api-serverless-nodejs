@@ -1,6 +1,8 @@
 npm i -g serverless
 serverless login
 
+    serverless create --template aws-nodejs --path api-serverless-aws-nodejs
+
 mkdir serverless-api && cd $_
 npm init -y
 npm i --save @aws-sdk/lib-dynamodb body-parser express node-uuid serverless-http cors morgan
